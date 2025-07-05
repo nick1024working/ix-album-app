@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="ix相簿">
+    <title>ix相簿 | 瀏覽相簿</title>
+
+    <!-- bootstrap css -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.7/css/bootstrap.min.css" rel="stylesheet">
+    <!-- slick-carousel -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css" />
+    <link rel="stylesheet" type="text/css"
+        href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick-theme.css" />
+    <!-- font-awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <!-- lightbox by kemiedon -->
+    <link rel="stylesheet" type="text/css" href="./css/libs/lightbox.css">
+
+    <!-- 預設全域css -->
+    <link rel="stylesheet" href="./css/style.css" />
+
+
+    <style>
+        /* 輪播主要容器 */
+        #image-carousel {
+            border: 1px solid var(--bs-light);
+            background-color: var(--bs-light);
+            border-radius: 0.5rem;
+            min-height: 190px;
+        }
+
+        /* 輪播左右側箭頭改色 */
+        /* 原因: 背景為白色 */
+        .slick-prev::before,
+        .slick-next::before {
+            color: #6f6f6f;
+        }
+
+        /* 解除 overflow */
+        /* 原因: 相片 hover 效果被限制 */
+        .slick-list {
+            overflow: visible !important;
+        }
+
+        /* 強化輪播中相片 hover 效果 */
+        /* 原因: 讓使用者覺得可以點擊，已觸發燈箱效果 */
+        .hover-zoom {
+            transition: transform 0.3s ease;
+            cursor: zoom-in;
+        }
+
+        .hover-zoom:hover {
+            z-index: 3;
+            transform: scale(1.2);
+            box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.3);
+        }
+
+        /* 提高燈箱 z-index 層級 */
+        /* 原因: 此處bootstrap button .active 時 z-index: 2 */
+        .lightbox-overlay {
+            z-index: 3;
+        }
+    </style>
+
+
+</head>
+
+<body>
+    <header>
+        <section class="container-fluid">
+            <nav class="navbar navbar-light navbar-expand-sm bg-white shadow-sm fixed-top">
+                <div class="container">
+                    <a class="navbar-brand" href="./index.html">ixAlbum</a>
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                        aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="collapse navbar-collapse" id="navbarNav">
+                        <ul class="navbar-nav">
+                            <li class="nav-item">
+                                <a class="nav-link" href="./album-create.html">建立相簿</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="./album-view.html">瀏覽相簿</a>
+                            </li>
+                        </ul>
+                        <div class="d-grid gap-2 d-sm-block ms-auto">
+                            <button class="btn btn-outline-secondary" type="button">登入</button>
+                            <button class="btn btn-info text-light" type="button">註冊</button>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+            <!-- 為了避免被 fixed-top 遮住，補上間距 -->
+            <div style="height: 80px;"></div>
+        </section>
+    </header>
+
+    <main>
+        <!-- 所有相簿列表 -->
+        <section class="container mb-4">
+            <div class="list-group" id="album-list">
+                <!-- 單一相簿 meta 將在此處插入 -->
+            </div>
+        </section>
+
+        <!-- 相簿照片輪播 -->
+        <section class="container mb-4">
+            <div class="col-12 mx-auto px-2 py-2" id="image-carousel">
+                <!-- 當前相簿所有照片將在此插入 -->
+            </div>
+        </section>
+
+        <!-- 操作按鈕 -->
+        <section>
+            <div class="d-grid gap-2 d-sm-flex justify-content-center">
+                <button id="clear-current-btn" class="btn btn-info text-light">
+                    刪除當前相簿
+                </button>
+                <button id="clear-all-btn" class="btn btn-info text-light">
+                    刪除所有相簿
+                </button>
+            </div>
+        </section>
+
+        <!-- 燈箱用 -->
+        <div class="lightbox-overlay">
+            <div class="lightbox-content">
+                <img alt="" class="lightbox-image">
+                <span class="lightbox-close"><i class="fa-solid fa-xmark"></i></span>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+    </footer>
+
+    <!-- Load JavaScript libraries -->
+    <!-- jquery -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <!-- bootstrap -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.7/js/bootstrap.min.js"></script>
+    <!-- IndexedDB -->
+    <script src="https://cdn.jsdelivr.net/npm/indexeddb-js@0.0.14/src/indexeddb-js.min.js"></script>
+    <!-- slick-carousel -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.9.0/slick.min.js"></script>
+    <!-- lightbox by kemiedon -->
+    <script src="./js/libs/lightbox.js"></script>
+
+    <!-- 核心 JS -->
+    <script type="module">
+
+        // === 匯入模組 ===
+        import dbContext from './js/utils/dbContext.js';
+        import { createAlbumDTO } from './js/models/AlbumDTO.js';
+
+        // === 宣告預設參數 ===
+        // 宣告 slick 預設參數
+        const slickDefault = {
+            infinite: true,
+            arrows: true,
+            slidesToShow: 5,
+            responsive: [
+                {
+                    breakpoint: 1200,
+                    settings: {
+                        arrows: true,
+                        slidesToShow: 4
+                    }
+                },
+                {
+                    breakpoint: 992,
+                    settings: {
+                        arrows: true,
+                        slidesToShow: 3
+                    }
+                },
+                {
+                    breakpoint: 768,
+                    settings: {
+                        arrows: false,
+                        slidesToShow: 2
+                    }
+                }
+                ,
+                {
+                    breakpoint: 576,
+                    settings: {
+                        arrows: false,
+                        slidesToShow: 1
+                    }
+                }
+            ]
+        };
+
+        // ===  jQuery 元素快取 ===
+        const $carousel = $('#image-carousel');
+        const $albumList = $('#album-list');
+
+        // === 物件 & 資料初始化 ===
+        await dbContext.init();
+
+        // ===  畫面渲染 ===
+
+        // 渲染相簿 (有新增 DOM element)
+        const albums = await dbContext.getAllItems();       // 讀取所有相簿資料
+        $albumList.empty();     // 清空原列表
+
+        for (const { key, value } of albums) {
+            const html = `
+                <button type="button" data-album-id="${key}"
+                    class="list-group-item list-group-item-action d-flex justify-content-between align-items-start">
+                    <div class="ps-1 pe-3 py-2">
+                        <h5 class="fw-bold mb-1">${value.name}</h5>
+                        <span class="text-black-50">${value.description || '無相簿描述...'}</span>
+                    </div>
+                    <span class="badge bg-secondary rounded-pill">${value.photos.length}</span>
+                </button>
+            `;
+            $albumList.append(html);
+        }
+
+        // ===  事件綁定 ===
+
+        // 點擊相簿，載入照片並啟動 Slick
+        $albumList.on('click', 'button', async function (event) {
+
+            // 改變狀態
+            $albumList.find('.list-group-item').removeClass('active');
+            $(this).addClass('active');
+
+            const albumId = $(this).data('album-id');
+            const queryResult = albums.find(a => String(a.key) === String(albumId));
+            if (queryResult === null) {
+                alert('相簿無照片');
+                return;
+            }
+            console.log(queryResult);
+            const photoList = queryResult.value.photos;
+
+            // 如果 slick 已初始化過，需先移除
+            if ($carousel.hasClass('slick-initialized')) {
+                $carousel.slick('unslick');
+            }
+
+            // 清空內容，加入圖片
+            $carousel.empty();
+            for (const img of photoList) {
+                const url = URL.createObjectURL(img.blob);
+                const htmlString = `
+                    <div>
+                        <a href="${url}" class="lightbox">
+                            <img src="${url}" class="img-thumbnail hover-zoom" style="height: 180px; width: 180px;">
+                        </a>
+                    </div>`;
+                $carousel.append(htmlString);
+            }
+
+            // 重新啟動 slick
+            $carousel.slick(slickDefault);
+        });
+
+        // 清除當前相簿資料
+        $('#clear-current-btn').on('click', async function () {
+            const $target = $albumList.find('button.active');
+            if ($target.length === 0) {
+                alert('請先選擇一個相簿');
+                return;
+            }
+
+            // 取得 id 並從 DB, 畫面中的 album-list, 與 image-carousel 中移除。
+            const albumId = $target.data('album-id');
+            try {
+                await dbContext.deleteItem(albumId); // 從 IndexedDB 刪除
+                $target.remove();                    // 從列表移除
+                $carousel.empty();                   // 清空圖片輪播區
+            } catch (err) {
+                console.error('刪除失敗', err);
+                alert('刪除相簿時發生錯誤');
+            }
+        })
+
+        // 清除全部相簿資料
+        $('#clear-all-btn').on('click', async function () {
+            const queryResult = await dbContext.deleteAllItems();
+            $carousel.empty();
+        })
+
+    </script>
+
+</body>
+
+</html>

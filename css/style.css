@@ -1,0 +1,24 @@
+@font-face {
+    font-family: 'MisekiBitmap';
+    src: url('../assets/fonts/MisekiBitmap.ttf') format('truetype');
+    font-weight: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'MisekiBitmapMincho';
+    src: url('../assets/fonts/MisekiBitmapMincho.ttf') format('truetype');
+    font-weight: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'ChillBitmap7';
+    src: url('../assets/fonts/ChillBitmap_7px.ttf') format('truetype');
+    font-weight: normal;
+    font-display: swap;
+}
+
+body {
+    font-family: 'ChillBitmap7', sans-serif;
+}

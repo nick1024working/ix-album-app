@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="ix相簿">
+    <title>ix相簿 | 新增相簿</title>
+
+    <!-- bootstrap css -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.7/css/bootstrap.min.css" rel="stylesheet">
+    <!-- dropzone 5.x 穩定版 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.3/min/dropzone.min.css">
+    <!-- Flatpickr   -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link rel="stylesheet" type="text/css" href="https://npmcdn.com/flatpickr/dist/themes/material_blue.css">
+    <!-- font-awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <!-- slick-carousel -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css" />
+    <link rel="stylesheet" type="text/css"
+        href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick-theme.css" />
+    <!-- Animate.css -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+
+    <!-- 預設全域css -->
+    <link rel="stylesheet" href="./css/style.css" />
+
+    <!-- 設定 image-dropzone 外觀 -->
+    <!-- 由於 .dz-message 是 Dropzone 自己產生的結構，不能直接用 Bootstrap -->
+    <!-- 此處乾脆整個一起定義樣式 -->
+    <style>
+        /* dropzone 主要容器 */
+        #album-photo-dropzone {
+            border: 1px solid var(--bs-light);
+            background-color: var(--bs-light);
+            border-radius: 0.5rem;
+            /* 給內部 .dz-message 定位用 */
+            position: relative;
+            min-height: 190px;
+            overflow: hidden;
+        }
+
+        /* dropzone 中預設底文字調整 */
+        /* 原因: 當 image review 刪除並撥放效果時， */
+        /* 需覆寫 dropzone 對此元素的控制 */
+        .dz-message {
+            /* 覺上存在但不影響實際佈局 */
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            /* 取消 Dropzone 的預設 margin */
+            margin: 0 !important;
+            transform: translate(-50%, -50%);
+            z-index: 1;
+
+            text-align: center;
+            font-size: 1.2rem;
+            color: var(--bs-secondary);
+        }
+
+        /* image review 刪除時效果 */
+        .animate__fadeOutDown {
+            --animate-duration: 0.7s;
+        }
+
+        /* image review 移動時隱藏佔位元素(僅占位不顯示) */
+        /* 原因: 會出現 ghost 不好看 */
+        .sortable-ghost {
+            opacity: 0;
+            transform: scale(0.95);
+            transition: all 0.2s ease;
+        }
+    </style>
+
+
+</head>
+
+<body>
+    <header>
+        <section class="container-fluid">
+            <nav class="navbar navbar-light navbar-expand-sm bg-white shadow-sm fixed-top">
+                <div class="container">
+                    <a class="navbar-brand" href="./index.html">ixAlbum</a>
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                        aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="collapse navbar-collapse" id="navbarNav">
+                        <ul class="navbar-nav">
+                            <li class="nav-item">
+                                <a class="nav-link" href="./album-create.html">建立相簿</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="./album-view.html">瀏覽相簿</a>
+                            </li>
+                        </ul>
+                        <div class="d-grid gap-2 d-sm-block ms-auto">
+                            <button class="btn btn-outline-secondary" type="button">登入</button>
+                            <button class="btn btn-info text-light" type="button">註冊</button>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+            <!-- 為了避免被 fixed-top 遮住，補上間距 -->
+            <div style="height: 80px;"></div>
+        </section>
+    </header>
+
+    <main>
+        <!-- 相簿建立與相片上傳 -->
+        <section class="container mb-5">
+            <form class="row needs-validation" id="album-form" novalidate>
+                <!-- 相簿 meta -->
+                <div class="col-12 mb-3">
+                    <label for="album-name" class="form-label">相簿名稱</label>
+                    <input type="text" class="form-control" id="album-name" name="name" required>
+                    <div class="invalid-feedback">
+                        不能為空，最多10個字。
+                    </div>
+                </div>
+                <div class="col-12 mb-3">
+                    <label for="album-description" class="form-label">相簿描述</label>
+                    <textarea class="form-control" id="album-description" name="description" rows="3"></textarea>
+                    <div class="invalid-feedback">
+                        最多200個字。
+                    </div>
+                </div>
+                <div class="col-12 row mb-4">
+                    <label for="album-date" class="col-sm-2 col-form-label">相簿拍攝日期</label>
+                    <div class="col-sm-4">
+                        <input type="text" class="form-control datepicker" id="album-date" name="dateTaken"
+                            placeholder="請選擇...">
+                    </div>
+                    <label for="album-created-date" class="col-sm-2 col-form-label">相簿建立日期</label>
+                    <div class="col-sm-4">
+                        <input type="text" class="form-control datepicker" id="album-created-date" name="createdAt"
+                            disabled>
+                    </div>
+                </div>
+
+                <!-- 相片本體 -->
+                <div class="col-12 mb-3">
+                    <label for="album-photo-dropzone" class="col-form-label">
+                        上傳照片<span class="text-black-50 ps-2" style="font-size: 0.75rem;">(可拖曳排序)</span>
+                    </label>
+                    <div class="dropzone position-relative mx-auto mb-2" id="album-photo-dropzone" tabindex="0">
+                        <!-- 此處是 dropzone -->
+                    </div>
+                    <div class="invalid-feedback">
+                        至少要有一張照片。
+                    </div>
+                </div>
+
+                <!-- 使用條款 -->
+                <div class="col-12 mb-5">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="" id="invalidCheck" required>
+                        <label class="form-check-label" for="invalidCheck">
+                            同意我們的<span>使用條款</span>
+                        </label>
+                        <div class="invalid-feedback">
+                            須同意使用條款才能上傳。
+                        </div>
+                    </div>
+                </div>
+
+                <div class="d-grid gap-2 d-sm-flex justify-content-center">
+                    <button id="reset-meta-btn" class="btn btn-info text-light">
+                        清空文字
+                    </button>
+                    <button id="reset-photo-btn" class="btn btn-info text-light">
+                        清空照片
+                    </button>
+                    <button id="upload-btn" class="btn btn-info text-light">
+                        上傳至 IndexedDB
+                    </button>
+                </div>
+            </form>
+        </section>
+    </main>
+
+    <footer>
+    </footer>
+
+    <!-- Load JavaScript libraries -->
+    <!-- jquery -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <!-- bootstrap -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.7/js/bootstrap.min.js"></script>
+    <!-- Flatpickr   -->
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/zh.js"></script>
+    <!-- Sortable -->
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js"></script>
+    <!-- dropzone 5.x 穩定版 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.3/dropzone.min.js"></script>
+    <!-- IndexedDB -->
+    <script src="https://cdn.jsdelivr.net/npm/indexeddb-js@0.0.14/src/indexeddb-js.min.js"></script>
+
+    <!-- 核心js - 設定 flatpickr -->
+    <script>
+        flatpickr("#album-date", {
+            locale: "zh",
+            dateFormat: "Y-m-d",
+            minDate: "1900-01-01",
+            maxDate: "today",
+        });
+        flatpickr("#album-created-date", {
+            defaultDate: "today"
+        });
+    </script>
+
+    <!-- 核心js - 設定 dropzone -->
+    <script type="module">
+
+        // === 匯入模組 ===
+        import sortableDropzone from './js/sortableDropzone.js';
+        import dbContext from './js/utils/dbContext.js';
+        import { createAlbumDTO } from './js/models/AlbumDTO.js';
+
+        // 定義新增的圖片 preview DOM 結構
+        const previewTemplate = `
+        <div class="dz-preview dz-file-preview position-relative d-inline-block me-2 mb-2">
+            <img data-dz-thumbnail class="img-thumbnail" style="width: 120px; height: 120px; object-fit: cover;" draggable="false" />
+        
+            <!-- 拖曳 handle（放左上角） -->
+            <i class="fas fa-grip position-absolute top-0 start-0 m-1 p-1 rounded-1 text-secondary" 
+            title="拖曳排序" style="cursor: move; background-color: white"></i>
+        
+            <!-- 移除按鈕（右上角） -->
+            <button class="btn btn-sm btn-danger position-absolute top-0 end-0 m-1" 
+            data-dz-remove title="移除圖片">&times;</button>
+        </div>
+        `;
+
+        // === 物件 & 資料初始化 ===
+        const sdz = sortableDropzone.init(document.querySelector('#album-photo-dropzone'), previewTemplate);
+        await dbContext.init();
+
+        // 客製化驗證欄位 for #album-photo-dropzone
+        // 確認是否合法 (照片須至少一張)
+        // HTML 原生 required 不支援 Sortable Dropzone
+        function setImageValidation() {
+            const domObj = document.querySelector('#album-photo-dropzone');
+            if (sdz.files.length === 0) {
+                domObj.classList.add("is-invalid");
+                domObj.classList.remove("is-valid");
+            } else {
+                domObj.classList.add("is-valid");
+                domObj.classList.remove("is-invalid");
+            }
+        }
+
+        // 已整合的表單驗證函數
+        function isFormValid(form) {
+
+            // 客製化驗證
+            setImageValidation();
+
+            // 是否有任何 is-invalid 存在
+            const hasInvalid = form.querySelectorAll('.is-invalid').length > 0;
+
+            // 檢查原生驗證
+            if (!form.checkValidity() || hasInvalid) {
+                return false;
+            }
+            return true;
+        }
+
+        // 表單驗證
+        (function () {
+            'use strict';
+
+            // 驗證並 apply custom Bootstrap validation styles
+            var forms = document.querySelectorAll('.needs-validation');
+            Array.prototype.slice.call(forms).forEach(function (form) {
+                form.addEventListener('submit', function (event) {
+                    if (!isFormValid(form)) {
+                        event.preventDefault()
+                        event.stopPropagation()
+                    }
+                    form.classList.add('was-validated')
+                }, false)
+            });
+        })()
+
+        // ===  事件綁定 ===
+
+        // 點擊清空文字按鈕，將表單上半部 album meta 清空
+        $('#reset--btn').on('click', async function () {
+            document.querySelector('#album-form').reset();
+        });
+
+        // 點擊清空照片按鈕，將圖片 review 清空
+        $('#reset-photo-btn').on('click', async function () {
+            sdz.removeAllFiles(false);
+        });
+
+        // 點擊上傳按鈕，將 meta + 照片 存入 IndexedDB
+        $('#upload-btn').on('click', async function () {
+            const form = document.querySelector('#album-form');
+            if (!isFormValid(form)) {
+                return; // 不通過就不做事
+            }
+
+            // 組 DTO
+            // HACK: 目前 blob 並非 base64
+            const meta = {
+                name: form.name.value,
+                description: form.description.value,
+                dateTaken: form.dateTaken.value,
+                createdAt: form.createdAt.value
+            };
+            const photoList = sdz.getAcceptedFiles().map(file => ({
+                name: file.name,
+                type: file.type,
+                blob: file,
+            }));
+            const albumData = createAlbumDTO(meta, photoList);
+
+            // 模擬送出
+            // fetch('https://httpbin.org/post', {
+            //     method: 'POST',
+            //     headers: { 'Content-Type': 'application/json' },
+            //     body: JSON.stringify(albumData)
+            // })
+            // .then(res => res.json())
+            // .then(data => {
+            //     console.log('伺服器回傳結果：', data);
+            // });
+
+            // 模擬存入後端 DB
+            await dbContext.addItem(albumData);
+
+            alert("已成功儲存！");
+            sdz.removeAllFiles(false);
+            form.reset();
+            form.classList.remove('was-validated');
+        });
+
+    </script>
+
+</body>
+
+</html>
