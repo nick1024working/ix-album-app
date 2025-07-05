@@ -5,7 +5,6 @@ $(function () {
   // 事件委派給父層，這樣後面 append 的也能觸發
   // 綁定 .lightbox 元素的點擊事件
   $(document).on('click', '.lightbox', function (e) {
-    console.log("lightbox!!");
     // 防止點擊時跳轉到 href 指定的 URL
     e.preventDefault();
     // 取得被點擊的圖片 URL

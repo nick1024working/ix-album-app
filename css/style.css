@@ -6,8 +6,8 @@
 }
 
 @font-face {
-    font-family: 'MisekiBitmapMincho';
-    src: url('../assets/fonts/MisekiBitmapMincho.ttf') format('truetype');
+    font-family: 'Uni0563';
+    src: url('../assets/fonts/uni05_63.ttf') format('truetype');
     font-weight: normal;
     font-display: swap;
 }
@@ -20,5 +20,23 @@
 }
 
 body {
+    color: white;
     font-family: 'ChillBitmap7', sans-serif;
+
+    background: #574354;
+    background: -webkit-linear-gradient(62deg, rgba(87, 67, 84, 1) 4%, rgba(44, 58, 79, 1) 49%, rgba(109, 147, 156, 1) 92%);
+    background: -moz-linear-gradient(62deg, rgba(87, 67, 84, 1) 4%, rgba(44, 58, 79, 1) 49%, rgba(109, 147, 156, 1) 92%);
+    background: linear-gradient(62deg, rgba(87, 67, 84, 1) 4%, rgba(44, 58, 79, 1) 49%, rgba(109, 147, 156, 1) 92%);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#574354", endColorstr="#6D939C", GradientType=0);
+}
+
+.navbar,
+footer {
+    background-color: rgb(25, 56, 84);
+    box-shadow: 0 0 3rem rgba(255, 255, 255, 0.2);
+}
+
+.navbar-brand,
+.navbar .nav-item .nav-link {
+    color: white;
 }

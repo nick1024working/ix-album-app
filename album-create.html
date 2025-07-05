@@ -77,11 +77,14 @@
 </head>
 
 <body>
+    <!-- BOOKMARK -->
     <header>
         <section class="container-fluid">
-            <nav class="navbar navbar-light navbar-expand-sm bg-white shadow-sm fixed-top">
+            <nav class="navbar navbar-light navbar-expand-sm fixed-top">
                 <div class="container">
-                    <a class="navbar-brand" href="./index.html">ixAlbum</a>
+                    <a class="navbar-brand" href="./index.html">
+                        <span style="font-family: Uni0563; line-height: 1;">ixAlbum</span>
+                    </a>
                     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
                         aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                         <span class="navbar-toggler-icon"></span>
@@ -102,16 +105,17 @@
                     </div>
                 </div>
             </nav>
-            <!-- 為了避免被 fixed-top 遮住，補上間距 -->
-            <div style="height: 80px;"></div>
         </section>
+        <!-- 為了避免被 fixed-top 遮住，補上間距 -->
+        <div style="height: 80px;"></div>
     </header>
 
+    <!-- BOOKMARK -->
     <main>
         <!-- 相簿建立與相片上傳 -->
         <section class="container mb-5">
             <form class="row needs-validation" id="album-form" novalidate>
-                <!-- 相簿 meta -->
+                <!-- 建立相簿 meta -->
                 <div class="col-12 mb-3">
                     <label for="album-name" class="form-label">相簿名稱</label>
                     <input type="text" class="form-control" id="album-name" name="name" required>
@@ -139,7 +143,7 @@
                     </div>
                 </div>
 
-                <!-- 相片本體 -->
+                <!-- 上傳相片 -->
                 <div class="col-12 mb-3">
                     <label for="album-photo-dropzone" class="col-form-label">
                         上傳照片<span class="text-black-50 ps-2" style="font-size: 0.75rem;">(可拖曳排序)</span>
@@ -157,7 +161,8 @@
                     <div class="form-check">
                         <input class="form-check-input" type="checkbox" value="" id="invalidCheck" required>
                         <label class="form-check-label" for="invalidCheck">
-                            同意我們的<span>使用條款</span>
+                            同意我們的<span class="ms-1 text-decoration-underline text-info" style="cursor: pointer;"
+                                data-bs-toggle="modal" data-bs-target="#termsModal">使用條款</span>
                         </label>
                         <div class="invalid-feedback">
                             須同意使用條款才能上傳。
@@ -166,22 +171,84 @@
                 </div>
 
                 <div class="d-grid gap-2 d-sm-flex justify-content-center">
-                    <button id="reset-meta-btn" class="btn btn-info text-light">
+                    <button id="clear-meta-btn" type="button" class="btn btn-info text-light">
                         清空文字
                     </button>
-                    <button id="reset-photo-btn" class="btn btn-info text-light">
+                    <button id="clear-photo-btn" type="button" class="btn btn-info text-light">
                         清空照片
                     </button>
-                    <button id="upload-btn" class="btn btn-info text-light">
-                        上傳至 IndexedDB
+                    <button id="upload-btn" type="submit" class="btn btn-info text-light">
+                        上傳相簿
                     </button>
                 </div>
             </form>
         </section>
     </main>
-
-    <footer>
+    <!-- BOOKMARK -->
+    <footer class="text-center text-lg-start mt-5">
+        <div class="container py-4">
+            <div class="row">
+                <div class="col-lg-6 mb-3 mb-lg-0 text-start">
+                    <h6 class="text-uppercase">網站名稱</h6>
+                    <p>這裡是頁尾簡介文字，可以放品牌介紹或聯絡資訊。</p>
+                </div>
+                <div class="col-lg-3 col-md-6 mb-3">
+                    <h6 class="text-uppercase">連結</h6>
+                    <ul class="list-unstyled">
+                        <li><a href="#" class="text-decoration-none">關於我們</a></li>
+                        <li><a href="#" class="text-decoration-none">服務項目</a></li>
+                        <li><a href="#" class="text-decoration-none">聯絡方式</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-3 col-md-6 mb-3">
+                    <h6 class="text-uppercase">社群</h6>
+                    <a href="#" class="me-2"><i class="fab fa-facebook"></i></a>
+                    <a href="#" class="me-2"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-github"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="text-center py-3">
+            &copy; 2025 nick1024working. All rights not reserved.
+        </div>
     </footer>
+
+    <!-- BOOKMARK -->
+    <!-- termsModal -->
+    <div class="modal fade" tabindex="-1" id="termsModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">使用條款</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-4">
+                        <p class="mb-2">進入本網頁即表示閣下同意接受下列使用/免責條款。</p>
+                        <p class="mb-2">如閣下不同意接受本使用條款，請勿繼續使用本網頁。</p>
+                    </div>
+                    <h5>1. 上傳的圖片</h5>
+                    <ul>
+                        <li>禁止上傳任何猥褻、暴力、會讓我們的伺服器難過的圖片。</li>
+                        <li>但其實資料皆是儲存在 IndexedDB 所以到頭來難過的是閣下你自己的電腦。</li>
+                    </ul>
+                    <h5>2. 上傳的資料</h5>
+                    <ul>
+                        <li>我們不會販售閣下的資料，因為沒有人想買它。</li>
+                    </ul>
+                    <h5>3. 條款變更</h5>
+                    <ul>
+                        <li>本使用條款及網頁內容的其他訊息及資料可在未經通知下不定期修改。</li>
+                        <li>我們從未擁有或保留任何權利，或我們的靈魂</li>
+                    </ul>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">同意</button>
+                    <a href="https://www.benesse.com.tw/" class="btn btn-warning">我拒絕</a>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- Load JavaScript libraries -->
     <!-- jquery -->
@@ -198,6 +265,7 @@
     <!-- IndexedDB -->
     <script src="https://cdn.jsdelivr.net/npm/indexeddb-js@0.0.14/src/indexeddb-js.min.js"></script>
 
+    <!-- BOOKMARK -->
     <!-- 核心js - 設定 flatpickr -->
     <script>
         flatpickr("#album-date", {
@@ -207,7 +275,9 @@
             maxDate: "today",
         });
         flatpickr("#album-created-date", {
-            defaultDate: "today"
+            enableTime: true,
+            dateFormat: "Y-m-d H:i",
+            defaultDate: new Date(),
         });
     </script>
 
@@ -215,7 +285,7 @@
     <script type="module">
 
         // === 匯入模組 ===
-        import sortableDropzone from './js/sortableDropzone.js';
+        import sortableDropzone from './js/libs/sortableDropzone.js';
         import dbContext from './js/utils/dbContext.js';
         import { createAlbumDTO } from './js/models/AlbumDTO.js';
 
@@ -288,21 +358,28 @@
         // ===  事件綁定 ===
 
         // 點擊清空文字按鈕，將表單上半部 album meta 清空
-        $('#reset--btn').on('click', async function () {
+        $('#clear-meta-btn').on('click', async function () {
+            scrollToElement('album-name');
             document.querySelector('#album-form').reset();
         });
 
         // 點擊清空照片按鈕，將圖片 review 清空
-        $('#reset-photo-btn').on('click', async function () {
+        $('#clear-photo-btn').on('click', async function () {
+            scrollToElement('album-photo-dropzone');
             sdz.removeAllFiles(false);
         });
 
         // 點擊上傳按鈕，將 meta + 照片 存入 IndexedDB
-        $('#upload-btn').on('click', async function () {
+        $('#upload-btn').on('click', async function (event) {
+            
             const form = document.querySelector('#album-form');
             if (!isFormValid(form)) {
-                return; // 不通過就不做事
+                scrollToElement('album-name');
+                pushToast('上傳相簿失敗!');
+                return;
             }
+            
+            event.preventDefault();
 
             // 組 DTO
             // HACK: 目前 blob 並非 base64
@@ -333,14 +410,66 @@
             // 模擬存入後端 DB
             await dbContext.addItem(albumData);
 
-            alert("已成功儲存！");
+            // 清理狀態
             sdz.removeAllFiles(false);
             form.reset();
             form.classList.remove('was-validated');
+
+            // 動畫
+            pushToast('上傳相簿成功');
+            scrollToElement('album-name');
         });
 
+        // 捲動到指定區塊
+        function scrollToElement(id) {
+            const navbarHeight = 100;
+            const target = document.getElementById(id);
+            const offsetTop = target.getBoundingClientRect().top + window.scrollY - navbarHeight;
+
+            window.scrollTo({
+                top: offsetTop,
+                behavior: 'smooth'
+            });
+        }
+
+        // 建立並顯示 toast
+        function pushToast(message) {
+            const template = document.querySelector('#template-toast');
+            const clone = template.cloneNode(true);
+
+            // 取消 d-none 並清 ID（防止重複 ID）
+            clone.classList.remove('d-none');
+            clone.id = '';
+
+            // 設定內容
+            clone.querySelector('.toast-body').textContent = message;
+
+            // 加到容器中
+            const container = document.querySelector('#toast-container');
+            container.appendChild(clone);
+
+            // 顯示 Toast
+            const toast = new bootstrap.Toast(clone);
+            toast.show();
+
+            // 結束後自動移除 DOM，避免累積
+            clone.addEventListener('hidden.bs.toast', () => {
+                clone.remove();
+            });
+        }
     </script>
 
 </body>
+
+<!-- Toast container（放多顆 Toast 用） -->
+<div id="toast-container" class="position-fixed bottom-0 end-0 p-3" style="z-index: 11;"></div>
+
+<!-- Toast 模板（不顯示） -->
+<div id="template-toast" class="toast d-none mt-2" role="alert" data-bs-delay="2000">
+    <div class="d-flex text-black">
+        <div class="toast-body"></div>
+        <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+    </div>
+</div>
 
 </html>

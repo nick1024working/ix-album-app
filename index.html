@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="author" content="ix相簿">
-    <title>ix相簿 – 收藏回憶，最爛的選擇</title>
+    <title>ixAlbum – 收藏回憶，最爛的選擇</title>
 
     <!-- bootstrap css -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.7/css/bootstrap.min.css" rel="stylesheet">
@@ -27,25 +27,33 @@
     <link rel="stylesheet" href="./css/style.css" />
 
 
+    <style>
+    </style>
 </head>
 
 <body>
+    <!-- BOOKMARK -->
     <header>
         <section class="container-fluid">
-            <nav class="navbar navbar-light navbar-expand-sm bg-white shadow-sm fixed-top">
+            <nav class="navbar navbar-light navbar-expand-sm fixed-top">
                 <div class="container">
-                    <a class="navbar-brand" href="./index.html">ixAlbum</a>
+                    <a class="navbar-brand" href="./index.html">
+                        <span style="font-family: Uni0563; line-height: 1;">ixAlbum</span>
+                    </a>
                     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
                         aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                         <span class="navbar-toggler-icon"></span>
                     </button>
                     <div class="collapse navbar-collapse" id="navbarNav">
-                        <ul class="navbar-nav">
+                        <ul class="navbar-nav ms-3">
                             <li class="nav-item">
                                 <a class="nav-link" href="./album-create.html">建立相簿</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" href="./album-view.html">瀏覽相簿</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="./album-view.html">摧毀相簿</a>
                             </li>
                         </ul>
                         <div class="d-grid gap-2 d-sm-block ms-auto">
@@ -55,16 +63,55 @@
                     </div>
                 </div>
             </nav>
-            <!-- 為了避免被 fixed-top 遮住，補上間距 -->
-            <div style="height: 80px;"></div>
         </section>
     </header>
 
+    <!-- BOOKMARK -->
     <main>
-        
+        <section class="d-flex justify-content-center align-items-center text-white text-center"
+            style="padding-top: 80px; height: 100vh;">
+            <div>
+                <h1 class="display-1 fw-bold mb-2" style="font-family: Uni0563;">ixAlbum</h1>
+                <h2 class="display-3 mb-4 wow animate__animated animate__zoomInDown" data-wow-delay="0.2s">
+                    收藏回憶，最爛的選擇
+                </h2>
+                <p class="fs-5 mb-0 wow animate__animated animate__fadeInLeft" data-wow-delay="1.75s"
+                    data-wow-duration="1.5s">
+                    基於 V8 引擎與 Chromium 技術，我們打造出一個幾乎會動的網頁相簿<br>
+                    使用 IndexedDB — 最不穩定的方式，儲存你的回憶<br>
+                    我們不保證永遠都找得到，但至少當下很浪漫。
+                </p>
+            </div>
+        </section>
     </main>
 
-    <footer>
+    <!-- BOOKMARK -->
+    <footer class="text-center text-lg-start mt-5">
+        <div class="container py-4">
+            <div class="row">
+                <div class="col-lg-6 mb-3 mb-lg-0 text-start">
+                    <h6 class="text-uppercase">網站名稱</h6>
+                    <p>這裡是頁尾簡介文字，可以放品牌介紹或聯絡資訊。</p>
+                </div>
+                <div class="col-lg-3 col-md-6 mb-3">
+                    <h6 class="text-uppercase">連結</h6>
+                    <ul class="list-unstyled">
+                        <li><a href="#" class="text-decoration-none">關於我們</a></li>
+                        <li><a href="#" class="text-decoration-none">服務項目</a></li>
+                        <li><a href="#" class="text-decoration-none">聯絡方式</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-3 col-md-6 mb-3">
+                    <h6 class="text-uppercase">社群</h6>
+                    <a href="#" class="me-2"><i class="fab fa-facebook"></i></a>
+                    <a href="#" class="me-2"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-github"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="text-center py-3">
+            &copy; 2025 nick1024working. All rights not reserved.
+        </div>
     </footer>
 
     <!-- Load JavaScript libraries -->
@@ -72,7 +119,13 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <!-- bootstrap -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.7/js/bootstrap.min.js"></script>
-    
+    <!-- WOW -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/wow/1.1.2/wow.min.js"></script>
+
+    <!-- 初始化 WOW.js -->
+    <script>
+        new WOW().init();
+    </script>
 </body>
 
 </html>

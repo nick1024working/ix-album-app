@@ -28,7 +28,14 @@
             border: 1px solid var(--bs-light);
             background-color: var(--bs-light);
             border-radius: 0.5rem;
-            min-height: 190px;
+            height: 250px;
+        }
+
+        /* 放大與父元素同高，並讓其中的子元素 slick-track 垂直置中 */
+        .slick-list {
+            display: grid;
+            place-items: center;
+            height: 100%;
         }
 
         /* 輪播左右側箭頭改色 */
@@ -36,12 +43,6 @@
         .slick-prev::before,
         .slick-next::before {
             color: #6f6f6f;
-        }
-
-        /* 解除 overflow */
-        /* 原因: 相片 hover 效果被限制 */
-        .slick-list {
-            overflow: visible !important;
         }
 
         /* 強化輪播中相片 hover 效果 */
@@ -53,14 +54,14 @@
 
         .hover-zoom:hover {
             z-index: 3;
-            transform: scale(1.2);
-            box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.3);
+            transform: scale(1.1);
+            box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.3);
         }
 
         /* 提高燈箱 z-index 層級 */
-        /* 原因: 此處bootstrap button .active 時 z-index: 2 */
+        /* 原因: 讓他比 bootstrap z-index 都要高 */
         .lightbox-overlay {
-            z-index: 3;
+            z-index: 2000;
         }
     </style>
 
@@ -68,11 +69,14 @@
 </head>
 
 <body>
+    <!-- BOOKMARK -->
     <header>
         <section class="container-fluid">
-            <nav class="navbar navbar-light navbar-expand-sm bg-white shadow-sm fixed-top">
+            <nav class="navbar navbar-light navbar-expand-sm fixed-top">
                 <div class="container">
-                    <a class="navbar-brand" href="./index.html">ixAlbum</a>
+                    <a class="navbar-brand" href="./index.html">
+                        <span style="font-family: Uni0563; line-height: 1;">ixAlbum</span>
+                    </a>
                     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
                         aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                         <span class="navbar-toggler-icon"></span>
@@ -93,12 +97,12 @@
                     </div>
                 </div>
             </nav>
-            <!-- 為了避免被 fixed-top 遮住，補上間距 -->
-            <div style="height: 80px;"></div>
         </section>
+        <!-- 為了避免被 fixed-top 遮住，補上間距 -->
+        <div style="height: 80px;"></div>
     </header>
-
-    <main>
+    <!-- BOOKMARK -->
+    <main style="padding-top: 80px;">
         <!-- 所有相簿列表 -->
         <section class="container mb-4">
             <div class="list-group" id="album-list">
@@ -124,18 +128,18 @@
                 </button>
             </div>
         </section>
-
-        <!-- 燈箱用 -->
-        <div class="lightbox-overlay">
-            <div class="lightbox-content">
-                <img alt="" class="lightbox-image">
-                <span class="lightbox-close"><i class="fa-solid fa-xmark"></i></span>
-            </div>
-        </div>
     </main>
-
+    <!-- BOOKMARK -->
     <footer>
     </footer>
+
+    <!-- 燈箱用 -->
+    <div class="lightbox-overlay">
+        <div class="lightbox-content">
+            <img alt="" class="lightbox-image">
+            <span class="lightbox-close"><i class="fa-solid fa-xmark"></i></span>
+        </div>
+    </div>
 
     <!-- Load JavaScript libraries -->
     <!-- jquery -->
@@ -154,6 +158,7 @@
 
         // === 匯入模組 ===
         import dbContext from './js/utils/dbContext.js';
+        import { urlToBlob } from './js/utils/fileHelpers.js';
         import { createAlbumDTO } from './js/models/AlbumDTO.js';
 
         // === 宣告預設參數 ===
@@ -208,6 +213,12 @@
         const albums = await dbContext.getAllItems();       // 讀取所有相簿資料
         $albumList.empty();     // 清空原列表
 
+        // 若沒有任何相簿，則新增一本佔位相簿
+        if (albums.length === 0) {
+            const placeholderAlbum = await createPlaceholderAlbum();
+            dbContext.addItem(placeholderAlbum);
+        }
+
         for (const { key, value } of albums) {
             const html = `
                 <button type="button" data-album-id="${key}"
@@ -252,7 +263,7 @@
                 const htmlString = `
                     <div>
                         <a href="${url}" class="lightbox">
-                            <img src="${url}" class="img-thumbnail hover-zoom" style="height: 180px; width: 180px;">
+                            <img src="${url}" class="img-thumbnail hover-zoom m-auto" style="height: 180px; width: 180px;">
                         </a>
                     </div>`;
                 $carousel.append(htmlString);
@@ -287,6 +298,31 @@
             const queryResult = await dbContext.deleteAllItems();
             $carousel.empty();
         })
+
+        // 建立佔位相簿
+        async function createPlaceholderAlbum() {
+            const blob = await urlToBlob('./assets/images/placeholder-1000x1000.png');
+            const placeholderImage = {
+                name: '空照片',
+                type: 'image/png',
+                blob: blob,
+            }
+            const now = Date.now();
+            const meta = {
+                name: '新增相簿',
+                description: '這本相簿裡沒有值得查看的記憶',
+                dateTaken: "1960-04-16 14:59",
+                createdAt: new Date(),
+            };
+            const photoList = [
+                placeholderImage,
+                placeholderImage,
+                placeholderImage,
+                placeholderImage,
+                placeholderImage,
+            ]
+            return createAlbumDTO(meta, photoList);
+        }
 
     </script>
 
