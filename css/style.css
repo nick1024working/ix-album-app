@@ -22,17 +22,34 @@
 body {
     color: white;
     font-family: 'ChillBitmap7', sans-serif;
-    background: #875283;
-    background: linear-gradient(62deg, rgba(135, 82, 131, 1) 0%, rgba(24, 35, 84, 1) 40%, rgba(24, 47, 84, 1) 60%, rgba(99, 150, 150, 1) 100%);
+    background: #41a371;
+    background: linear-gradient(67deg, rgba(65, 163, 113, 1) 0%, rgba(46, 133, 97, 1) 29%, rgba(58, 150, 123, 1) 52%, rgba(102, 212, 215, 1) 81%, rgba(136, 212, 190, 1) 100%);
 }
 
 .navbar,
 footer {
-    background-color: rgb(25, 56, 84);
+    background-color: #003262;
     box-shadow: 0 0 3rem rgba(255, 255, 255, 0.2);
 }
 
-.navbar-brand,
-.navbar .nav-item .nav-link {
+.nav-link,
+footer p,
+footer a {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+#hero-cta {
+    color: white;
+}
+
+#hero-cta:hover,
+a .text-logo:hover,
+.nav-link:hover,
+footer a:hover {
+    color: #66D4D7;
+}
+
+.text-logo {
+    font-family: 'Uni0563', sans-serif;
     color: white;
 }
