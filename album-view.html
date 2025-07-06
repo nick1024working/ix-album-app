@@ -183,8 +183,13 @@
                 <div class="col-lg-3 col-md-6 mb-3">
                     <h6 class="text-uppercase">連結</h6>
                     <ul class="list-unstyled">
+<<<<<<< HEAD
                         <li><a href="#" class="text-decoration-none text-black pe-none">關於我們</a></li>
                         <li><a href="#" class="text-decoration-none text-black pe-none">技術</a></li>
+=======
+                        <li><a href="#" class="text-decoration-none">關於我們</a></li>
+                        <li><a href="#" class="text-decoration-none">技術</a></li>
+>>>>>>> b4b57bca618b10932955bcf96e6f3af537447cd2
                         <li><a href="#footer-open-terms-btn" id="footer-open-terms-btn"
                                 class="text-decoration-none">使用條款</a></li>
                     </ul>
@@ -234,7 +239,10 @@
         import { urlToBlob } from './js/utils/fileHelpers.js';
         import { createAlbumDTO } from './js/models/AlbumDTO.js';
         import { scrollToElement } from './js/utils/uiHelper.js';
+<<<<<<< HEAD
         import { MessageToast } from './js/toasts/messageToast.js';
+=======
+>>>>>>> b4b57bca618b10932955bcf96e6f3af537447cd2
 
         // ========== 宣告預設參數 ==========
         // 宣告 slick 預設參數
@@ -281,7 +289,10 @@
 
         // ========== 物件 & 資料初始化 ==========
         await dbContext.init();                         // 全域 dbContext，用來存取 DB
+<<<<<<< HEAD
         const toast = new MessageToast();
+=======
+>>>>>>> b4b57bca618b10932955bcf96e6f3af537447cd2
         await tryResetDB(dbContext)                     // 嘗試重設 DB
         let albums = await dbContext.getAllItems();     // 全域 albums，DB 中的所有相簿
 
@@ -341,7 +352,10 @@
             }
 
             // 移動到上面
+<<<<<<< HEAD
             toast.push('刪除相簿成功');
+=======
+>>>>>>> b4b57bca618b10932955bcf96e6f3af537447cd2
             scrollToElement('album-list-title');
         })
 
