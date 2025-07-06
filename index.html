@@ -9,23 +9,13 @@
 
     <!-- bootstrap css -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.7/css/bootstrap.min.css" rel="stylesheet">
-    <!-- dropzone 5.x 穩定版 -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.3/min/dropzone.min.css">
-    <!-- Flatpickr   -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-    <link rel="stylesheet" type="text/css" href="https://npmcdn.com/flatpickr/dist/themes/material_blue.css">
     <!-- font-awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
-    <!-- slick-carousel -->
-    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css" />
-    <link rel="stylesheet" type="text/css"
-        href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick-theme.css" />
     <!-- Animate.css -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
 
     <!-- 預設全域css -->
     <link rel="stylesheet" href="./css/style.css" />
-
 
     <style>
     </style>
@@ -53,7 +43,7 @@
                                 <a class="nav-link" href="./album-view.html">瀏覽相簿</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="./album-view.html">摧毀相簿</a>
+                                <button id="nav-destroy-btn" class="nav-link" type="button">摧毀相簿</button>
                             </li>
                         </ul>
                         <div class="d-grid gap-2 d-sm-block ms-auto">
@@ -122,9 +112,21 @@
     <!-- WOW -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/wow/1.1.2/wow.min.js"></script>
 
-    <!-- 初始化 WOW.js -->
-    <script>
+    <!-- BOOKMARK -->
+    <script type="module">
+        // === 匯入模組 ===
+        import { DestroyAlbumModal } from './js/modals/destroyAlbumModal.js';
+        import dbContext from './js/utils/dbContext.js';
+
+        // === 物件 & 資料初始化 ===
         new WOW().init();
+        await dbContext.init();
+
+        // ===  事件綁定 ===
+        // 點擊上方 nav-bar 摧毀相簿按鈕
+        document.getElementById('nav-destroy-btn').addEventListener('click', () => {
+            new DestroyAlbumModal(dbContext.deleteAllItems);
+        })
     </script>
 </body>
 

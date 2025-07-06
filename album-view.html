@@ -82,12 +82,15 @@
                         <span class="navbar-toggler-icon"></span>
                     </button>
                     <div class="collapse navbar-collapse" id="navbarNav">
-                        <ul class="navbar-nav">
+                        <ul class="navbar-nav ms-3">
                             <li class="nav-item">
                                 <a class="nav-link" href="./album-create.html">建立相簿</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" href="./album-view.html">瀏覽相簿</a>
+                            </li>
+                            <li class="nav-item">
+                                <button id="nav-destroy-btn" class="nav-link" type="button">摧毀相簿</button>
                             </li>
                         </ul>
                         <div class="d-grid gap-2 d-sm-block ms-auto">
@@ -98,21 +101,52 @@
                 </div>
             </nav>
         </section>
-        <!-- 為了避免被 fixed-top 遮住，補上間距 -->
-        <div style="height: 80px;"></div>
     </header>
     <!-- BOOKMARK -->
     <main style="padding-top: 80px;">
+        <h1 class="display-4 text-center my-3">所有相簿列表</h1>
         <!-- 所有相簿列表 -->
-        <section class="container mb-4">
+        <section class="container mb-5">
             <div class="list-group" id="album-list">
                 <!-- 單一相簿 meta 將在此處插入 -->
             </div>
         </section>
 
-        <!-- 相簿照片輪播 -->
+        <!-- 相簿詳情 - meta -->
+        <h1 class="display-4 text-center my-3">相簿詳情</h1>
         <section class="container mb-4">
-            <div class="col-12 mx-auto px-2 py-2" id="image-carousel">
+            <!-- 相簿名稱 -->
+            <div class="col-12 mb-3">
+                <label class="form-label">相簿名稱</label>
+                <input type="text" readonly class="form-control bg-white bg-opacity-10 text-white" id="album-name-view"
+                    value="" disabled>
+            </div>
+
+            <!-- 相簿描述 -->
+            <div class="col-12 mb-3">
+                <label class="form-label">相簿描述</label>
+                <textarea readonly class="form-control bg-white bg-opacity-10 text-white" id="album-description-view"
+                    rows="3" disabled></textarea>
+            </div>
+
+            <!-- 拍攝/建立日期 -->
+            <div class="col-12 row mb-4">
+                <label class="col-sm-2 col-form-label">相簿拍攝日期</label>
+                <div class="col-sm-4">
+                    <input type="text" readonly class="form-control bg-white bg-opacity-10 text-white"
+                        id="album-date-view" value="" disabled>
+                </div>
+                <label class="col-sm-2 col-form-label">相簿建立日期</label>
+                <div class="col-sm-4">
+                    <input type="text" readonly class="form-control bg-white bg-opacity-10 text-white"
+                        id="album-created-date-view" value="" disabled>
+                </div>
+            </div>
+        </section>
+        <!-- 相簿詳情 - 內容 -->
+        <section class="container mb-4">
+            <label class="form-label">相簿內容</label>
+            <div class="col-12 mx-auto px-2 py-2 bg-white bg-opacity-10" id="image-carousel">
                 <!-- 當前相簿所有照片將在此插入 -->
             </div>
         </section>
@@ -122,9 +156,6 @@
             <div class="d-grid gap-2 d-sm-flex justify-content-center">
                 <button id="clear-current-btn" class="btn btn-info text-light">
                     刪除當前相簿
-                </button>
-                <button id="clear-all-btn" class="btn btn-info text-light">
-                    刪除所有相簿
                 </button>
             </div>
         </section>
@@ -141,22 +172,23 @@
         </div>
     </div>
 
+    <!-- BOOKMARK -->
     <!-- Load JavaScript libraries -->
     <!-- jquery -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <!-- bootstrap -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.7/js/bootstrap.min.js"></script>
-    <!-- IndexedDB -->
-    <script src="https://cdn.jsdelivr.net/npm/indexeddb-js@0.0.14/src/indexeddb-js.min.js"></script>
     <!-- slick-carousel -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.9.0/slick.min.js"></script>
     <!-- lightbox by kemiedon -->
     <script src="./js/libs/lightbox.js"></script>
 
+
     <!-- 核心 JS -->
     <script type="module">
 
         // === 匯入模組 ===
+        import { DestroyAlbumModal } from './js/modals/destroyAlbumModal.js';
         import dbContext from './js/utils/dbContext.js';
         import { urlToBlob } from './js/utils/fileHelpers.js';
         import { createAlbumDTO } from './js/models/AlbumDTO.js';
@@ -235,7 +267,7 @@
 
         // ===  事件綁定 ===
 
-        // 點擊相簿，載入照片並啟動 Slick
+        // 點擊相簿，載入相簿 meta、載入照片並啟動 Slick
         $albumList.on('click', 'button', async function (event) {
 
             // 改變狀態
@@ -248,8 +280,10 @@
                 alert('相簿無照片');
                 return;
             }
-            console.log(queryResult);
             const photoList = queryResult.value.photos;
+
+            // 載入相簿 meta
+            fillAlbumMeta(queryResult);
 
             // 如果 slick 已初始化過，需先移除
             if ($carousel.hasClass('slick-initialized')) {
@@ -293,12 +327,6 @@
             }
         })
 
-        // 清除全部相簿資料
-        $('#clear-all-btn').on('click', async function () {
-            const queryResult = await dbContext.deleteAllItems();
-            $carousel.empty();
-        })
-
         // 建立佔位相簿
         async function createPlaceholderAlbum() {
             const blob = await urlToBlob('./assets/images/placeholder-1000x1000.png');
@@ -324,6 +352,22 @@
             return createAlbumDTO(meta, photoList);
         }
 
+        // === 工具函數
+
+        function fillAlbumMeta(album) {
+            if (!album) return;
+
+            document.getElementById('album-name-view').value = album.value.name || '';
+            document.getElementById('album-description-view').value = album.value.description || '';
+            document.getElementById('album-date-view').value = album.value.dateTaken || '';
+            document.getElementById('album-created-date-view').value = album.value.createdAt || '';
+        }
+
+        // 點擊上方 nav-bar 摧毀相簿按鈕
+        document.getElementById('nav-destroy-btn').addEventListener('click', () => {
+            new DestroyAlbumModal(dbContext.deleteAllItems);
+
+        })
     </script>
 
 </body>
