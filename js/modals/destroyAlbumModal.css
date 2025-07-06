@@ -1,10 +1,10 @@
 .button-49,
 .button-49:after {
-    background: linear-gradient(45deg, transparent 5%, #FF013C 5%);
+    background: linear-gradient(45deg, transparent 5%, #FF004F 5%);
     border: 0;
     color: #fff;
     letter-spacing: 3px;
-    box-shadow: 6px 0px 0px #00E6F6;
+    box-shadow: 6px 0px 0px #66D4D7;
     outline: transparent;
     position: relative;
     user-select: none;

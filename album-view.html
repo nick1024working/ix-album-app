@@ -7,8 +7,12 @@
     <meta name="author" content="ix相簿">
     <title>ix相簿 | 瀏覽相簿</title>
 
+    <link rel="icon" href="./assets/icons/favicon.png" type="image/x-icon">
+
     <!-- bootstrap css -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.7/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Animate.css -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
     <!-- slick-carousel -->
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css" />
     <link rel="stylesheet" type="text/css"
@@ -63,6 +67,13 @@
         .lightbox-overlay {
             z-index: 2000;
         }
+
+        /* 針對被選中的 list-group-item-light */
+        .list-group-item-light.active {
+            color: rgb(0, 0, 0) !important;
+            background-color: #66D4D7 !important;
+            border-color: rgba(0, 0, 0, 0.25) !important;
+        }
     </style>
 
 
@@ -72,10 +83,10 @@
     <!-- BOOKMARK -->
     <header>
         <section class="container-fluid">
-            <nav class="navbar navbar-light navbar-expand-sm fixed-top">
+            <nav class="navbar navbar-dark navbar-expand-sm fixed-top">
                 <div class="container">
                     <a class="navbar-brand" href="./index.html">
-                        <span style="font-family: Uni0563; line-height: 1;">ixAlbum</span>
+                        <span class="text-logo" style="line-height: 1;">ixAlbum</span>
                     </a>
                     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
                         aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -94,8 +105,8 @@
                             </li>
                         </ul>
                         <div class="d-grid gap-2 d-sm-block ms-auto">
-                            <button class="btn btn-outline-secondary" type="button">登入</button>
-                            <button class="btn btn-info text-light" type="button">註冊</button>
+                            <button class="btn btn-outline-secondary disabled" type="button">登入</button>
+                            <button class="btn btn-outline-secondary disabled" type="button">註冊</button>
                         </div>
                     </div>
                 </div>
@@ -103,8 +114,8 @@
         </section>
     </header>
     <!-- BOOKMARK -->
-    <main style="padding-top: 80px;">
-        <h1 class="display-4 text-center my-3">所有相簿列表</h1>
+    <main style="padding-top: 80px; margin-bottom: 10rem;">
+        <h1 id="album-list-title" class="display-4 text-center my-3">所有相簿列表</h1>
         <!-- 所有相簿列表 -->
         <section class="container mb-5">
             <div class="list-group" id="album-list">
@@ -113,7 +124,7 @@
         </section>
 
         <!-- 相簿詳情 - meta -->
-        <h1 class="display-4 text-center my-3">相簿詳情</h1>
+        <h1 id="album-info-title" class="display-4 text-center my-3">相簿詳情</h1>
         <section class="container mb-4">
             <!-- 相簿名稱 -->
             <div class="col-12 mb-3">
@@ -145,7 +156,7 @@
         </section>
         <!-- 相簿詳情 - 內容 -->
         <section class="container mb-4">
-            <label class="form-label">相簿內容</label>
+            <label id="album-content-title" class="form-label">相簿內容</label>
             <div class="col-12 mx-auto px-2 py-2 bg-white bg-opacity-10" id="image-carousel">
                 <!-- 當前相簿所有照片將在此插入 -->
             </div>
@@ -161,7 +172,36 @@
         </section>
     </main>
     <!-- BOOKMARK -->
-    <footer>
+    <footer class="text-center text-lg-start mt-5">
+        <div class="container py-4">
+            <div class="row">
+                <div class="col-lg-6 mb-3 mb-lg-0 text-start">
+                    <h6 class="text-logo">ixAlbum</h6>
+                    <p>這是我們對浪漫與資料遺失的一次實驗。<br />我們知道，用IndexedDB儲存相片是個糟糕的點子。<br />但也許，這才是人生中那些稍縱即逝的瞬間，該有的收藏方式。<br />ixAlbum，獻給所有不完美、卻值得被記得的回憶。
+                    </p>
+                </div>
+                <div class="col-lg-3 col-md-6 mb-3">
+                    <h6 class="text-uppercase">連結</h6>
+                    <ul class="list-unstyled">
+                        <li><a href="#" class="text-decoration-none">關於我們</a></li>
+                        <li><a href="#" class="text-decoration-none">技術</a></li>
+                        <li><a href="#footer-open-terms-btn" id="footer-open-terms-btn"
+                                class="text-decoration-none">使用條款</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-3 col-md-6 mb-3">
+                    <h6 class="text-uppercase">社群</h6>
+                    <a href="https://github.com/nick1024working/ix-album-app" target="_blank" class="me-2"><i
+                            class="fab fa-github"></i></a>
+                    <a href="#" target="_blank" class="me-2 text-black pe-none"><i class="fab fa-facebook"></i></a>
+                    <a href="#" target="_blank" class="text-black pe-none"><i class="fab fa-instagram"></i></a>
+                </div>
+            </div>
+        </div>
+        <div id="footer-last-word" class="text-center"></div>
+        <div class="text-center pb-3">
+            &copy; 2025 nick1024working. All rights not reserved.
+        </div>
     </footer>
 
     <!-- 燈箱用 -->
@@ -187,13 +227,15 @@
     <!-- 核心 JS -->
     <script type="module">
 
-        // === 匯入模組 ===
+        // ========== 匯入模組 ==========
         import { DestroyAlbumModal } from './js/modals/destroyAlbumModal.js';
+        import { TermsModal } from './js/modals/termsModal.js';
         import dbContext from './js/utils/dbContext.js';
         import { urlToBlob } from './js/utils/fileHelpers.js';
         import { createAlbumDTO } from './js/models/AlbumDTO.js';
+        import { scrollToElement } from './js/utils/uiHelper.js';
 
-        // === 宣告預設參數 ===
+        // ========== 宣告預設參數 ==========
         // 宣告 slick 預設參數
         const slickDefault = {
             infinite: true,
@@ -232,42 +274,21 @@
             ]
         };
 
-        // ===  jQuery 元素快取 ===
+        // ==========  jQuery 元素快取 ==========
         const $carousel = $('#image-carousel');
         const $albumList = $('#album-list');
 
-        // === 物件 & 資料初始化 ===
-        await dbContext.init();
+        // ========== 物件 & 資料初始化 ==========
+        await dbContext.init();                         // 全域 dbContext，用來存取 DB
+        await tryResetDB(dbContext)                     // 嘗試重設 DB
+        let albums = await dbContext.getAllItems();     // 全域 albums，DB 中的所有相簿
 
-        // ===  畫面渲染 ===
+        // ==========  畫面初始化 ==========
+        setAlbumList(albums);
 
-        // 渲染相簿 (有新增 DOM element)
-        const albums = await dbContext.getAllItems();       // 讀取所有相簿資料
-        $albumList.empty();     // 清空原列表
+        // ==========  事件綁定 ==========
 
-        // 若沒有任何相簿，則新增一本佔位相簿
-        if (albums.length === 0) {
-            const placeholderAlbum = await createPlaceholderAlbum();
-            dbContext.addItem(placeholderAlbum);
-        }
-
-        for (const { key, value } of albums) {
-            const html = `
-                <button type="button" data-album-id="${key}"
-                    class="list-group-item list-group-item-action d-flex justify-content-between align-items-start">
-                    <div class="ps-1 pe-3 py-2">
-                        <h5 class="fw-bold mb-1">${value.name}</h5>
-                        <span class="text-black-50">${value.description || '無相簿描述...'}</span>
-                    </div>
-                    <span class="badge bg-secondary rounded-pill">${value.photos.length}</span>
-                </button>
-            `;
-            $albumList.append(html);
-        }
-
-        // ===  事件綁定 ===
-
-        // 點擊相簿，載入相簿 meta、載入照片並啟動 Slick
+        // 事件: 點擊相簿，載入相簿 meta、載入照片並啟動 Slick
         $albumList.on('click', 'button', async function (event) {
 
             // 改變狀態
@@ -276,15 +297,143 @@
 
             const albumId = $(this).data('album-id');
             const queryResult = albums.find(a => String(a.key) === String(albumId));
-            if (queryResult === null) {
-                alert('相簿無照片');
+            const photoList = queryResult.value.photos;
+
+            if (queryResult === null || photoList === null) {
+                // TODO: 待設計 exception handling
+                alert('系統忙碌中');
                 return;
             }
-            const photoList = queryResult.value.photos;
 
             // 載入相簿 meta
             fillAlbumMeta(queryResult);
+            fillCarousel(photoList)
 
+            // 移動到下面
+            scrollToElement('album-info-title');
+        });
+
+        // 事件: 清除當前相簿資料
+        $('#clear-current-btn').on('click', async function () {
+            const $target = $albumList.find('button.active');
+            if ($target.length === 0) {
+                alert('請先選擇一個相簿');
+                return;
+            }
+
+            // 取得 id 並從 DB 與畫面中移除。
+            const albumId = $target.data('album-id');
+            try {
+                await dbContext.deleteItem(albumId); // 從 IndexedDB 刪除
+                $target.remove();                    // 從列表移除
+                $carousel.empty();                   // 清空圖片輪播區
+            } catch (err) {
+                console.error('刪除失敗', err);
+                alert('刪除相簿時發生錯誤');
+            }
+
+            // 嘗試更新資料庫，並執行可能的刷新列表。
+            if (await tryResetDB(dbContext)) {
+                albums = await dbContext.getAllItems();
+                setAlbumList(albums);
+            }
+
+            // 移動到上面
+            scrollToElement('album-list-title');
+        })
+
+        // 事件: 點擊上方 nav-bar 摧毀相簿按鈕
+        document.getElementById('nav-destroy-btn').addEventListener('click', async () => {
+            new DestroyAlbumModal(async () => {
+                await dbContext.deleteAllItems
+
+                // 嘗試更新資料庫，並執行可能的刷新列表。
+                if (await tryResetDB(dbContext)) {
+                    albums = await dbContext.getAllItems();
+                    setAlbumList(albums);
+                }
+
+                // 移動到上面
+                scrollToElement('album-list-title');
+            });
+        })
+
+        // 事件: 點擊使用者條款 show modal
+        document.getElementById('footer-open-terms-btn').addEventListener('click', () => {
+            new TermsModal();
+        });
+
+        // ==========  核心函數 (將用於事件綁定) ==========
+
+        // 依照傳入相簿，載入 UI 相簿列表
+        function setAlbumList(albums) {
+
+            // 清空原列表
+            $albumList.empty();
+
+            // 渲染相簿列表 (新增 DOM element)
+            for (const { key, value } of albums) {
+                const html = `
+                <button type="button" data-album-id="${key}"
+                    class="list-group-item list-group-item-light list-group-item-action d-flex justify-content-between align-items-start">
+                    <div class="ps-1 pe-3 py-2">
+                        <h5 class="fw-bold mb-1">${value.name}</h5>
+                        <span class="text-black-50 d-inline-block text-truncate" style="max-width: 60vw;">${value.description || '無相簿描述...'}</span>
+                    </div>
+                    <span class="badge bg-secondary rounded-pill">${value.photos.length}</span>
+                </button>
+                `;
+                $albumList.append(html);
+            }
+        }
+
+        // 嘗試重設資料庫，若沒有任何相簿，則新增一本佔位相簿
+        async function tryResetDB(dbContext) {
+            if (await dbContext.count() === 0) {
+                const placeholderAlbum = await createPlaceholderAlbum();
+                dbContext.addItem(placeholderAlbum);
+                return true;
+            }
+            return false;
+        }
+
+        // 建立佔位相簿
+        async function createPlaceholderAlbum() {
+            const blob = await urlToBlob('./assets/images/placeholder-1000x1000.png');
+            const placeholderImage = {
+                name: '空照片',
+                type: 'image/png',
+                blob: blob,
+            }
+            const todayDate = new Date().toISOString().split('T')[0];
+            const meta = {
+                name: '忘不掉的回憶',
+                description: '當列表是空的，這本相簿就會自動出現',
+                dateTaken: "1960-04-16 14:59",
+                createdAt: todayDate,
+            };
+            const photoList = [
+                placeholderImage,
+                placeholderImage,
+                placeholderImage,
+                placeholderImage,
+                placeholderImage,
+            ]
+            return createAlbumDTO(meta, photoList);
+        }
+
+        // 把相簿 meta 資料載入對應 UI
+        function fillAlbumMeta(album) {
+            if (!album)
+                return;
+            document.getElementById('album-name-view').value = album.value.name || '';
+            document.getElementById('album-description-view').value = album.value.description || '';
+            document.getElementById('album-date-view').value = album.value.dateTaken || '';
+            document.getElementById('album-created-date-view').value = album.value.createdAt || '';
+        }
+
+        // 把相簿 blob 資料載入對應 UI
+        function fillCarousel(photoList) {
             // 如果 slick 已初始化過，需先移除
             if ($carousel.hasClass('slick-initialized')) {
                 $carousel.slick('unslick');
@@ -305,69 +454,27 @@
 
             // 重新啟動 slick
             $carousel.slick(slickDefault);
+        }
+    </script>
+
+    <!-- UI Layout 用 JS -->
+    <!-- TODO: 要再找地方用 -->
+    <script type="module">
+        // ========== 匯入模組 ==========
+        import { WeatherController } from './js/controllers/weatherController.js';
+
+        const controller = new WeatherController({
+            showSunset: (record) => {
+                document.querySelector('#footer-last-word').textContent =
+                    `${record.county} 日落時間: ${record.sunsetTime} | 愛惜光陰 遵守時間`;
+            },
+            showError: (msg) => {
+                // alert(msg);
+            }
         });
 
-        // 清除當前相簿資料
-        $('#clear-current-btn').on('click', async function () {
-            const $target = $albumList.find('button.active');
-            if ($target.length === 0) {
-                alert('請先選擇一個相簿');
-                return;
-            }
-
-            // 取得 id 並從 DB, 畫面中的 album-list, 與 image-carousel 中移除。
-            const albumId = $target.data('album-id');
-            try {
-                await dbContext.deleteItem(albumId); // 從 IndexedDB 刪除
-                $target.remove();                    // 從列表移除
-                $carousel.empty();                   // 清空圖片輪播區
-            } catch (err) {
-                console.error('刪除失敗', err);
-                alert('刪除相簿時發生錯誤');
-            }
-        })
-
-        // 建立佔位相簿
-        async function createPlaceholderAlbum() {
-            const blob = await urlToBlob('./assets/images/placeholder-1000x1000.png');
-            const placeholderImage = {
-                name: '空照片',
-                type: 'image/png',
-                blob: blob,
-            }
-            const now = Date.now();
-            const meta = {
-                name: '新增相簿',
-                description: '這本相簿裡沒有值得查看的記憶',
-                dateTaken: "1960-04-16 14:59",
-                createdAt: new Date(),
-            };
-            const photoList = [
-                placeholderImage,
-                placeholderImage,
-                placeholderImage,
-                placeholderImage,
-                placeholderImage,
-            ]
-            return createAlbumDTO(meta, photoList);
-        }
-
-        // === 工具函數
-
-        function fillAlbumMeta(album) {
-            if (!album) return;
-
-            document.getElementById('album-name-view').value = album.value.name || '';
-            document.getElementById('album-description-view').value = album.value.description || '';
-            document.getElementById('album-date-view').value = album.value.dateTaken || '';
-            document.getElementById('album-created-date-view').value = album.value.createdAt || '';
-        }
-
-        // 點擊上方 nav-bar 摧毀相簿按鈕
-        document.getElementById('nav-destroy-btn').addEventListener('click', () => {
-            new DestroyAlbumModal(dbContext.deleteAllItems);
-
-        })
+        const todayDate = new Date().toISOString().split('T')[0];
+        controller.fetchSunset(todayDate);
     </script>
 
 </body>

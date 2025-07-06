@@ -43,6 +43,22 @@ async function getDB() {
 }
 
 /**
+ * 取得資料筆數
+ */
+async function count() {
+    const db = await getDB();
+    const tx = db.transaction(STORE_NAME, "readonly");
+    const store = tx.objectStore(STORE_NAME);
+
+    return new Promise((resolve, reject) => {
+        const request = store.count();
+        request.onsuccess = () => resolve(request.result);
+        request.onerror = () => reject(request.error);
+    });
+}
+
+
+/**
  * 新增一筆資料
  * @param {Object} data - 包含 name、blob 等欄位
  */
@@ -126,6 +142,7 @@ async function deleteAllItems() {
 
 export default {
     init,
+    count,
     addItem,
     getAllItems,
     deleteItem,

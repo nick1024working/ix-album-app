@@ -7,6 +7,8 @@
     <meta name="author" content="ix相簿">
     <title>ixAlbum – 收藏回憶，最爛的選擇</title>
 
+    <link rel="icon" href="./assets/icons/favicon.png" type="image/x-icon">
+
     <!-- bootstrap css -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.7/css/bootstrap.min.css" rel="stylesheet">
     <!-- font-awesome -->
@@ -25,10 +27,10 @@
     <!-- BOOKMARK -->
     <header>
         <section class="container-fluid">
-            <nav class="navbar navbar-light navbar-expand-sm fixed-top">
+            <nav class="navbar navbar-dark navbar-expand-sm fixed-top">
                 <div class="container">
                     <a class="navbar-brand" href="./index.html">
-                        <span style="font-family: Uni0563; line-height: 1;">ixAlbum</span>
+                        <span class="text-logo" style="line-height: 1;">ixAlbum</span>
                     </a>
                     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
                         aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -47,8 +49,8 @@
                             </li>
                         </ul>
                         <div class="d-grid gap-2 d-sm-block ms-auto">
-                            <button class="btn btn-outline-secondary" type="button">登入</button>
-                            <button class="btn btn-info text-light" type="button">註冊</button>
+                            <button class="btn btn-outline-secondary disabled" type="button">登入</button>
+                            <button class="btn btn-outline-secondary disabled" type="button">註冊</button>
                         </div>
                     </div>
                 </div>
@@ -57,7 +59,7 @@
     </header>
 
     <!-- BOOKMARK -->
-    <main>
+    <main style="margin-bottom: 6rem;">
         <section class="d-flex justify-content-center align-items-center text-white text-center"
             style="padding-top: 80px; height: 100vh;">
             <div>
@@ -65,12 +67,15 @@
                 <h2 class="display-3 mb-4 wow animate__animated animate__zoomInDown" data-wow-delay="0.2s">
                     收藏回憶，最爛的選擇
                 </h2>
-                <p class="fs-5 mb-0 wow animate__animated animate__fadeInLeft" data-wow-delay="1.75s"
+                <p class="fs-5 mb-4 wow animate__animated animate__fadeInLeft" data-wow-delay="1.75s"
                     data-wow-duration="1.5s">
                     基於 V8 引擎與 Chromium 技術，我們打造出一個幾乎會動的網頁相簿<br>
                     使用 IndexedDB — 最不穩定的方式，儲存你的回憶<br>
                     我們不保證永遠都找得到，但至少當下很浪漫。
                 </p>
+                <a href="album-create.html" id="hero-cta" class="fs-3 mb-0 text-decoration-underline cursor-pointer wow animate__animated animate__fadeInRight" data-wow-delay="3s">
+                    立即收藏回憶
+                </a>
             </div>
         </section>
     </main>
@@ -80,30 +85,35 @@
         <div class="container py-4">
             <div class="row">
                 <div class="col-lg-6 mb-3 mb-lg-0 text-start">
-                    <h6 class="text-uppercase">網站名稱</h6>
-                    <p>這裡是頁尾簡介文字，可以放品牌介紹或聯絡資訊。</p>
+                    <h6 class="text-logo">ixAlbum</h6>
+                    <p>這是我們對浪漫與資料遺失的一次實驗。<br />我們知道，用IndexedDB儲存相片是個糟糕的點子。<br />但也許，這才是人生中那些稍縱即逝的瞬間，該有的收藏方式。<br />ixAlbum，獻給所有不完美、卻值得被記得的回憶。
+                    </p>
                 </div>
                 <div class="col-lg-3 col-md-6 mb-3">
                     <h6 class="text-uppercase">連結</h6>
                     <ul class="list-unstyled">
                         <li><a href="#" class="text-decoration-none">關於我們</a></li>
-                        <li><a href="#" class="text-decoration-none">服務項目</a></li>
-                        <li><a href="#" class="text-decoration-none">聯絡方式</a></li>
+                        <li><a href="#" class="text-decoration-none">技術</a></li>
+                        <li><a href="#footer-open-terms-btn" id="footer-open-terms-btn"
+                                class="text-decoration-none">使用條款</a></li>
                     </ul>
                 </div>
                 <div class="col-lg-3 col-md-6 mb-3">
                     <h6 class="text-uppercase">社群</h6>
-                    <a href="#" class="me-2"><i class="fab fa-facebook"></i></a>
-                    <a href="#" class="me-2"><i class="fab fa-instagram"></i></a>
-                    <a href="#"><i class="fab fa-github"></i></a>
+                    <a href="https://github.com/nick1024working/ix-album-app" target="_blank" class="me-2"><i
+                            class="fab fa-github"></i></a>
+                    <a href="#" target="_blank" class="me-2 text-black pe-none"><i class="fab fa-facebook"></i></a>
+                    <a href="#" target="_blank" class="text-black pe-none"><i class="fab fa-instagram"></i></a>
                 </div>
             </div>
         </div>
-        <div class="text-center py-3">
+        <div id="footer-last-word" class="text-center"></div>
+        <div class="text-center pb-3">
             &copy; 2025 nick1024working. All rights not reserved.
         </div>
     </footer>
 
+    <!-- BOOKMARK -->
     <!-- Load JavaScript libraries -->
     <!-- jquery -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
@@ -113,21 +123,57 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/wow/1.1.2/wow.min.js"></script>
 
     <!-- BOOKMARK -->
+    <!-- 核心 JS -->
     <script type="module">
-        // === 匯入模組 ===
+        // ========== 匯入模組 ==========
         import { DestroyAlbumModal } from './js/modals/destroyAlbumModal.js';
+        import { TermsModal } from './js/modals/termsModal.js';
         import dbContext from './js/utils/dbContext.js';
 
-        // === 物件 & 資料初始化 ===
+        // ========== 物件 & 資料初始化 ==========
         new WOW().init();
         await dbContext.init();
 
-        // ===  事件綁定 ===
-        // 點擊上方 nav-bar 摧毀相簿按鈕
-        document.getElementById('nav-destroy-btn').addEventListener('click', () => {
-            new DestroyAlbumModal(dbContext.deleteAllItems);
+        // ==========  事件綁定 ==========
+
+        // 事件: 點擊上方 nav-bar 摧毀相簿按鈕
+        document.getElementById('nav-destroy-btn').addEventListener('click', async () => {
+            new DestroyAlbumModal(async () => {
+                await dbContext.deleteAllItems
+
+                // 嘗試更新資料庫。
+                if (await tryResetDB(dbContext)) {
+                    setAlbumList(albums);
+                }
+            });
         })
+
+        // 事件: 點擊 footer 使用者條款 show modal
+        document.getElementById('footer-open-terms-btn').addEventListener('click', () => {
+            new TermsModal();
+        });
     </script>
+
+    <!-- UI Layout 用 JS -->
+    <!-- TODO: 要再找地方用 -->
+    <script type="module">
+        // ========== 匯入模組 ==========
+        import { WeatherController } from './js/controllers/weatherController.js';
+
+        const controller = new WeatherController({
+            showSunset: (record) => {
+                document.querySelector('#footer-last-word').textContent =
+                    `${record.county} 日落時間: ${record.sunsetTime} | 愛惜光陰 遵守時間`;
+            },
+            showError: (msg) => {
+                // alert(msg);
+            }
+        });
+
+        const todayDate = new Date().toISOString().split('T')[0];
+        controller.fetchSunset(todayDate);
+    </script>
+
 </body>
 
 </html>
