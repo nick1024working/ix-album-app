@@ -348,15 +348,17 @@
         // 事件: 點擊上方 nav-bar 摧毀相簿按鈕
         document.getElementById('nav-destroy-btn').addEventListener('click', async () => {
             new DestroyAlbumModal(async () => {
-                await dbContext.deleteAllItems
-
+                await dbContext.deleteAllItems();
+                
                 // 嘗試更新資料庫，並執行可能的刷新列表。
                 if (await tryResetDB(dbContext)) {
                     albums = await dbContext.getAllItems();
+                    // 更新列表
                     setAlbumList(albums);
                 }
 
                 // 移動到上面
+                toast.push('已摧毀所有相簿');
                 scrollToElement('album-list-title');
             });
         })

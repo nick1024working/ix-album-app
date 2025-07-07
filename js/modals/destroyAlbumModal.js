@@ -30,7 +30,7 @@ export class DestroyAlbumModal {
                     </div>
                     <div class="modal-body text-center">
                         <p class="fs-2 fw-bold">確定要捨棄所有回憶?</p>
-                        <button id="confirm-destroy-btn" type="button" class="fs-3 fw-bold button-49" data-bs-dismiss="modal">關閉</button>
+                        <button id="confirm-destroy-btn" type="button" class="fs-3 fw-bold button-49" data-bs-dismiss="modal">確定</button>
                     </div>
                 </div>
             </div>
@@ -45,12 +45,14 @@ export class DestroyAlbumModal {
         // 執行 callback 然後 hide
         modalElement.querySelector('#confirm-destroy-btn')
             .addEventListener('click', () => {
+                document.activeElement.blur();
                 this.onConfirm?.();
                 this.modal.hide();
             });
 
         // 清除 DOM node
         modalElement.addEventListener('hidden.bs.modal', () => {
+            document.activeElement.blur();
             modalElement.remove();
         });
 

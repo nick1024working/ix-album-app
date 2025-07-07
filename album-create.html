@@ -70,9 +70,14 @@
             transition: all 0.2s ease;
         }
 
-
-        .form-check-input:checked {
+        .form-check-input:valid:checked,
+        .was-validated .form-check-input:valid:checked {
             background-color: #66D4D7;
+        }
+
+        .form-check-input.is-valid~.form-check-label,
+        .was-validated .form-check-input:valid~.form-check-label {
+            color: white;
         }
     </style>
 
@@ -366,12 +371,8 @@
         // 事件: 點擊上方 nav-bar 摧毀相簿按鈕
         document.getElementById('nav-destroy-btn').addEventListener('click', async () => {
             new DestroyAlbumModal(async () => {
-                await dbContext.deleteAllItems
-
-                // 嘗試更新資料庫。
-                if (await tryResetDB(dbContext)) {
-                    setAlbumList(albums);
-                }
+                await dbContext.deleteAllItems();
+                toast.push('已摧毀所有相簿');
             });
         })
 

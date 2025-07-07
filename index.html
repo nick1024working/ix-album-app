@@ -44,9 +44,6 @@
                             <li class="nav-item">
                                 <a class="nav-link" href="./album-view.html">瀏覽相簿</a>
                             </li>
-                            <li class="nav-item">
-                                <button id="nav-destroy-btn" class="nav-link" type="button">摧毀相簿</button>
-                            </li>
                         </ul>
                         <div class="d-grid gap-2 d-sm-block ms-auto">
                             <button class="btn btn-outline-secondary disabled" type="button">登入</button>
@@ -126,27 +123,12 @@
     <!-- 核心 JS -->
     <script type="module">
         // ========== 匯入模組 ==========
-        import { DestroyAlbumModal } from './js/modals/destroyAlbumModal.js';
         import { TermsModal } from './js/modals/termsModal.js';
-        import dbContext from './js/utils/dbContext.js';
 
         // ========== 物件 & 資料初始化 ==========
         new WOW().init();
-        await dbContext.init();
 
         // ==========  事件綁定 ==========
-
-        // 事件: 點擊上方 nav-bar 摧毀相簿按鈕
-        document.getElementById('nav-destroy-btn').addEventListener('click', async () => {
-            new DestroyAlbumModal(async () => {
-                await dbContext.deleteAllItems
-
-                // 嘗試更新資料庫。
-                if (await tryResetDB(dbContext)) {
-                    setAlbumList(albums);
-                }
-            });
-        })
 
         // 事件: 點擊 footer 使用者條款 show modal
         document.getElementById('footer-open-terms-btn').addEventListener('click', () => {
