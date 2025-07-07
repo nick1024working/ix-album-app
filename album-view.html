@@ -275,9 +275,13 @@
             ]
         };
 
-        // ==========  jQuery 元素快取 ==========
+        // ==========  元素快取 ==========
         const $carousel = $('#image-carousel');
         const $albumList = $('#album-list');
+        const albumNameView = document.getElementById('album-name-view');
+        const albumDescriptionView = document.getElementById('album-description-view');
+        const albumDateView = document.getElementById('album-date-view');
+        const albumCreatedDateView = document.getElementById('album-created-date-view');
 
         // ========== 物件 & 資料初始化 ==========
         await dbContext.init();                         // 全域 dbContext，用來存取 DB
@@ -323,6 +327,9 @@
                 return;
             }
 
+            // 清除入相簿 meta
+            clearAlbumMeta();
+
             // 取得 id 並從 DB 與畫面中移除。
             const albumId = $target.data('album-id');
             try {
@@ -349,7 +356,7 @@
         document.getElementById('nav-destroy-btn').addEventListener('click', async () => {
             new DestroyAlbumModal(async () => {
                 await dbContext.deleteAllItems();
-                
+
                 // 嘗試更新資料庫，並執行可能的刷新列表。
                 if (await tryResetDB(dbContext)) {
                     albums = await dbContext.getAllItems();
@@ -374,6 +381,7 @@
         function setAlbumList(albums) {
 
             // 清空原列表
+            clearAlbumMeta();
             $albumList.empty();
 
             // 渲染相簿列表 (新增 DOM element)
@@ -431,10 +439,19 @@
         function fillAlbumMeta(album) {
             if (!album)
                 return;
-            document.getElementById('album-name-view').value = album.value.name || '';
-            document.getElementById('album-description-view').value = album.value.description || '';
-            document.getElementById('album-date-view').value = album.value.dateTaken || '';
-            document.getElementById('album-created-date-view').value = album.value.createdAt || '';
+            albumNameView.value = album.value.name || '';
+            albumDescriptionView.value = album.value.description || '';
+            albumDateView.value = album.value.dateTaken || '';
+            albumCreatedDateView.value = album.value.createdAt || '';
+        }
+
+        // 把 UI 中相簿 meta 資料albumCreatedDateView.value = '';清除
+        function clearAlbumMeta() {
+            [albumNameView, albumDescriptionView, albumDateView, albumCreatedDateView].forEach(el => {
+                el.disabled = false;
+                el.value = '';
+                el.disabled = true;
+            });
         }
 
         // 把相簿 blob 資料載入對應 UI

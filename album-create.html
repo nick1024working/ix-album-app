@@ -247,21 +247,6 @@
 
     <!-- BOOKMARK -->
 
-    <!-- 核心js - 設定 flatpickr -->
-    <script>
-        flatpickr("#album-date", {
-            locale: "zh",
-            dateFormat: "Y-m-d",
-            minDate: "1900-01-01",
-            maxDate: "today",
-        });
-        flatpickr("#album-created-date", {
-            enableTime: true,
-            dateFormat: "Y-m-d H:i",
-            defaultDate: new Date(),
-        });
-    </script>
-
     <!-- 核心js -->
     <script type="module">
 
@@ -294,13 +279,26 @@
         const sdz = sortableDropzone.init(document.querySelector('#album-photo-dropzone'), previewTemplate);
         await dbContext.init();
         const toast = new MessageToast();
+        const albumDate = flatpickr("#album-date", {
+            locale: "zh",
+            dateFormat: "Y-m-d",
+            minDate: "1900-01-01",
+            maxDate: "today",
+        });
+        const albumCreateDate = flatpickr("#album-created-date", {
+            enableTime: true,
+            dateFormat: "Y-m-d H:i",
+            defaultDate: new Date()
+        });
 
         // ==========  事件綁定 ==========
 
         // 事件: 點擊清空文字按鈕，將表單上半部 album meta 清空
         $('#clear-meta-btn').on('click', async function () {
-            scrollToElement('album-name');
+            // 目前用HTML 原生 form.reset()行為
             document.querySelector('#album-form').reset();
+            albumCreateDate.setDate(new Date(), true);
+            scrollToElement('album-name');
         });
 
         // 事件: 點擊清空照片按鈕，將圖片 review 清空
@@ -354,6 +352,8 @@
             sdz.removeAllFiles(false);
             form.reset();
             form.classList.remove('was-validated');
+
+            albumCreateDate.setDate(new Date(), true);
 
             // 動畫
             toast.push('上傳相簿成功');
