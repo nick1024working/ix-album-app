@@ -234,10 +234,7 @@
         import { urlToBlob } from './js/utils/fileHelpers.js';
         import { createAlbumDTO } from './js/models/AlbumDTO.js';
         import { scrollToElement } from './js/utils/uiHelper.js';
-<<<<<<< HEAD
         import { MessageToast } from './js/toasts/messageToast.js';
-=======
->>>>>>> b4b57bca618b10932955bcf96e6f3af537447cd2
 
         // ========== 宣告預設參數 ==========
         // 宣告 slick 預設參數
@@ -284,10 +281,7 @@
 
         // ========== 物件 & 資料初始化 ==========
         await dbContext.init();                         // 全域 dbContext，用來存取 DB
-<<<<<<< HEAD
         const toast = new MessageToast();
-=======
->>>>>>> b4b57bca618b10932955bcf96e6f3af537447cd2
         await tryResetDB(dbContext)                     // 嘗試重設 DB
         let albums = await dbContext.getAllItems();     // 全域 albums，DB 中的所有相簿
 
@@ -347,10 +341,7 @@
             }
 
             // 移動到上面
-<<<<<<< HEAD
             toast.push('刪除相簿成功');
-=======
->>>>>>> b4b57bca618b10932955bcf96e6f3af537447cd2
             scrollToElement('album-list-title');
         })
 
